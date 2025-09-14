@@ -324,7 +324,7 @@ class GcodeReader:
 
         fig, ax = plt.subplots()
         ax.axis('off')
-        ax.add_patch(Rectangle((miny, minz), (maxy - miny), (maxz - minz), facecolor='k', fill=False))
+        ax.add_patch(Rectangle((miny, minz), (maxy - miny), (maxz - minz), edgecolor='c', fill=False))
         ax.scatter(y_coords, z_coords, color=['red'], s=5)
         ax.set_title("Vista de Corte Transversal")
         plt.show()
@@ -359,7 +359,7 @@ def command_line_runner(filename, filetype, ref_file):
     areaCortes, minP, minArea, minCut_solidArea, minCut_points = gcode_reader.search_minorArea(CONFIG["delta"], CONFIG["step"], CONFIG["ejeMenor"], CONFIG["ejeMayor"])
 
     # Aplicar nuevo estilo de la interfaz
-    plt.style.use('seaborn-v0_8-darkgrid')
+    plt.style.use('dark_background')
 
     # --- Visualización rápida de la primera capa en 2D ---
     try:
@@ -368,10 +368,10 @@ def command_line_runner(filename, filetype, ref_file):
         if layer0:
             fig, ax = create_axis(projection='2d')
             for x0, y0, x1, y1, z in layer0:
-                ax.plot([x0, x1], [y0, y1], 'k-', linewidth=0.5)
+                ax.plot([x0, x1], [y0, y1], 'c-', linewidth=0.5)
 
             # Línea de corte transversal
-            ax.axvline(x=minP, color='g', linestyle='--', linewidth=1)
+            ax.axvline(x=minP, color='r', linestyle='--', linewidth=1)
             ax.set_aspect('equal', adjustable='datalim')
             ax.set_title(f'Primera capa z={z0:.3f}')
 
@@ -382,7 +382,7 @@ def command_line_runner(filename, filetype, ref_file):
                         f"Segmentos: {num_segs}\n"
                         f"Área Proporcional Mínima: {minArea:.4f}\n"
                         f"Área Sólida de Corte: {minCut_solidArea:.4f}")
-            props = dict(boxstyle='round', facecolor='lightsteelblue', alpha=0.7)
+            props = dict(boxstyle='round', facecolor='#333333', alpha=0.8, edgecolor='c')
             ax.text(0.05, 0.95, text_str, transform=ax.transAxes, fontsize=9,
                     verticalalignment='top', bbox=props)
             plt.show()
@@ -408,13 +408,13 @@ def command_line_runner(filename, filetype, ref_file):
         ax.set_ylim(ymin, ymax)
 
         # Línea de corte transversal
-        ax.axvline(x=minP, color='g', linestyle='--', linewidth=1)
+        ax.axvline(x=minP, color='r', linestyle='--', linewidth=1)
 
         # Dibujar capa por capa
         for idx, z in enumerate(gcode_reader.seg_index):
             layer = gcode_reader.get_layerSegs(z, z)
             for x0, y0, x1, y1, _ in layer:
-                ax.plot([x0, x1], [y0, y1], 'k-', linewidth=0.4)
+                ax.plot([x0, x1], [y0, y1], 'c-', linewidth=0.4)
             plt.pause(0.05)  # pausa pequeña para animación
 
         ax.set_title("Impresión completa (2D)")
@@ -448,7 +448,7 @@ def command_line_runner(filename, filetype, ref_file):
             Y = np.array([[ymin, ymax], [ymin, ymax]])
             Z = np.array([[zmin_plot, zmin_plot], [zmax_plot, zmax_plot]])
             X = np.full_like(Y, minP)
-            ax3d.plot_surface(X, Y, Z, color='g', alpha=0.3, shade=False)
+            ax3d.plot_surface(X, Y, Z, color='r', alpha=0.4, shade=False)
 
         ax3d.set_title(title)
         plt.show()
